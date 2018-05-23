@@ -1,0 +1,14 @@
+{
+  "name": "dohmqa",
+  "version": "1.0.0",
+  "description": "Automated process for Target Copy DOH mailing procedure.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Russ Forstall",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^2.4.0"
+  }
+}
