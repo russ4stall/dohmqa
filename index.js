@@ -6,7 +6,6 @@ const parse = require('csv-parse/lib/sync');
 const csvListDir = "list"; // Directory where the csvs to process live.
 const splitPdfDir = "split_pdfs"; // Directory where the pdfs to rename live.
 
-
 class InfoObj {
     constructor(name, value) {
         this.name = name;
@@ -47,24 +46,24 @@ csvList.forEach(file => {
 
     var count = 0;
     recordsFromCsv.forEach(x => {
+        // Get the values from the csv row.
         var fileNumber = x["FILE_NBR"];
         var compasLicId = x["COMPAS_LIC_ID"];
         var docType = x["DOCTYPE"];
         var proCode = x["PROCODE"];
 
-        if (fileNumber !== "" && fileNumber !== undefined) {
-            var jsonFilePath = `${dirPath}/${fileNumber}.json`;
+        if (fileNumber !== "" && fileNumber !== undefined) { // Skip if no file number provided.
+            var jsonFilePath = `${dirPath}/${fileNumber}.json`; // Construct the file name.
         
+            // Construct the object graph for the correct output format.
             var infoArr = [];
             infoArr.push(new InfoObj("compas_lic_id", compasLicId));
             infoArr.push(new InfoObj("doctype", docType));
             infoArr.push(new InfoObj("file_nbr", fileNumber));
             infoArr.push(new InfoObj("procode", proCode));
-            
-            
             var obj = { "info": [infoArr] };
             
-            fs.writeFileSync(jsonFilePath, JSON.stringify(obj));
+            fs.writeFileSync(jsonFilePath, JSON.stringify(obj)); // Write the file.
             count++;
         }
     });
