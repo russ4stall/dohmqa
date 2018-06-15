@@ -66,7 +66,12 @@ csvList.forEach(file => {
             
             fs.writeFileSync(jsonFilePath, JSON.stringify(obj)); // Write the file.
 
-            fs.renameSync(`${splitPdfDir}/${sequenceNumber}.pdf`, `${splitPdfDir}/${fileNumber}.pdf`); // Rename the corresponding pdf.
+            var pdfPath = `${splitPdfDir}/${sequenceNumber}.pdf`;
+            if (fs.existsSync(pdfPath)) {
+                fs.renameSync(pdfPath, `${splitPdfDir}/${fileNumber}.pdf`); // Rename the corresponding pdf.
+            } else {
+                console.log(`${pdfPath} doesn't exist!`);
+            }
             
             count++;
         }
