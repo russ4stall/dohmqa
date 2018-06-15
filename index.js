@@ -47,6 +47,7 @@ csvList.forEach(file => {
     var count = 0;
     recordsFromCsv.forEach(x => {
         // Get the values from the csv row.
+        var sequenceNumber = x["seq"];
         var fileNumber = x["FILE_NBR"];
         var compasLicId = x["COMPAS_LIC_ID"];
         var docType = x["DOCTYPE"];
@@ -54,7 +55,7 @@ csvList.forEach(file => {
 
         if (fileNumber !== "" && fileNumber !== undefined) { // Skip if no file number provided.
             var jsonFilePath = `${dirPath}/${fileNumber}.json`; // Construct the file name.
-        
+
             // Construct the object graph for the correct output format.
             var infoArr = [];
             infoArr.push(new InfoObj("compas_lic_id", compasLicId));
@@ -64,8 +65,11 @@ csvList.forEach(file => {
             var obj = { "info": [infoArr] };
             
             fs.writeFileSync(jsonFilePath, JSON.stringify(obj)); // Write the file.
+
+            fs.renameSync(`${splitPdfDir}/${sequenceNumber}.pdf`, `${splitPdfDir}/${fileNumber}.pdf`); // Rename the corresponding pdf.
+            
             count++;
         }
     });
-    console.log(`${count} json files created.`);
+    console.log(`${count} records processed.`);
 });
