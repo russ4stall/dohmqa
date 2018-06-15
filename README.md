@@ -6,8 +6,7 @@
 ## Installation
 
 1. Make sure [Node.js](https://nodejs.org/en/) is installed on the target machine.
-2. Clone or download this repository. (Click the green button above.)
-3. Open your terminal or command prompt to this repository's directory and run the command `npm install -g`.
+2. Open your terminal or command prompt to this repository's directory and run the command `npm install -g git+https://github.com/russ4stall/dohmqa.git`.
 
 
 ## Execution 
