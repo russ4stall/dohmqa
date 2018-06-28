@@ -58,7 +58,6 @@ csvList.forEach(file => {
 
             // Construct the object graph for the correct output format.
             var infoArr = [];
-            infoArr.push(new InfoObj("compas_lic_id", compasLicId));
             infoArr.push(new InfoObj("doctype", docType));
             infoArr.push(new InfoObj("file_nbr", fileNumber));
             infoArr.push(new InfoObj("procode", proCode));
