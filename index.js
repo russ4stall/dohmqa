@@ -47,7 +47,7 @@ csvList.forEach(file => {
     var count = 0;
     recordsFromCsv.forEach(x => {
         // Get the values from the csv row.
-        var sequenceNumber = x["seq"];
+        var sequenceNumber = x["SEQ"];
         var fileNumber = x["FILE_NBR"];
         var compasLicId = x["COMPAS_LIC_ID"];
         var docType = x["DOCTYPE"];
