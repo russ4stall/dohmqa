@@ -3,8 +3,9 @@
 const fs = require('fs');
 const parse = require('csv-parse/lib/sync');
 
-const csvListDir = "list"; // Directory where the csvs to process live.
-const splitPdfDir = "split_pdfs"; // Directory where the pdfs to rename live.
+const csvListDir = "JSON"; // Directory where the csvs to process live.
+const splitPdfDir = "JSON/split_pdfs"; // Directory where the pdfs to rename live.
+const renamedPdfDir = "JSON/renamed_pdfs"; // Directory where the renamed pdfs live.
 
 class InfoObj {
     constructor(name, value) {
@@ -30,10 +31,18 @@ fs.readdirSync(csvListDir).forEach(file => {
 });
 console.log(`${csvList.length} csv file(s) found.`)
 
+// Create the directory for renamed pdfs.
+if (!fs.existsSync(renamedPdfDir)) {
+    fs.mkdirSync(renamedPdfDir); 
+    console.log(`Created directory '${renamedPdfDir}'.`);
+} else {
+    console.log(`Directory '${renamedPdfDir}' already exists.`);
+}
+
 csvList.forEach(file => {
     var dirPath = `${csvListDir}/${file.substring(0, file.length - 4)}_json`; // Construct the directory name.
     
-    // Create the directory.
+    // Create the directory for json data.
     if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath); 
         console.log(`Created directory '${dirPath}'.`);
@@ -54,7 +63,19 @@ csvList.forEach(file => {
         var proCode = x["PROCODE"];
 
         if (fileNumber !== "" && fileNumber !== undefined) { // Skip if no file number provided.
-            var jsonFilePath = `${dirPath}/${fileNumber}.json`; // Construct the file name.
+
+            var jsonFilePath = `${dirPath}/${fileNumber}`; // Construct the file name.
+
+            // Check for duplicate file.
+            if (fs.existsSync(jsonFilePath+".json")) {
+                var appendFileCount = 1;
+                while (fs.existsSync(`${jsonFilePath}_${appendFileCount}.json`)) {
+                    appendFileCount++;
+                }
+                jsonFilePath = `${jsonFilePath}_${appendFileCount}`;
+            }
+
+            jsonFilePath = jsonFilePath + ".json";
 
             // Construct the object graph for the correct output format.
             var infoArr = [];
@@ -67,7 +88,22 @@ csvList.forEach(file => {
 
             var pdfPath = `${splitPdfDir}/${sequenceNumber}.pdf`;
             if (fs.existsSync(pdfPath)) {
-                fs.renameSync(pdfPath, `${splitPdfDir}/${fileNumber}.pdf`); // Rename the corresponding pdf.
+                //fs.renameSync(pdfPath, `${renamedPdfDir}/${fileNumber}.pdf`); // Rename the corresponding pdf.
+
+                // Check for duplicates
+                var renamedPdfFilePath = `${renamedPdfDir}/${fileNumber}`; 
+                if (fs.existsSync(renamedPdfFilePath+".pdf")) {
+                    var appendFileCount = 1;
+                    while (fs.existsSync(`${renamedPdfFilePath}_${appendFileCount}.pdf`)) {
+                        appendFileCount++;
+                    }
+                    renamedPdfFilePath = `${renamedPdfFilePath}_${appendFileCount}`;
+                }
+    
+                renamedPdfFilePath = renamedPdfFilePath + ".pdf";
+
+                fs.copyFileSync(pdfPath, renamedPdfFilePath);
+
             } else {
                 console.log(`${pdfPath} doesn't exist!`);
             }
